@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy .NET app to Azure Web App - deployment-slots-demo
+name: Build and deploy ASP.NET 4.8 app to Azure Web App - deployment-slots-demo
 
 on:
   push:
@@ -11,39 +11,33 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Use Windows runner for ASP.NET Framework 4.8
 
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
 
-      # Setup .NET Core SDK
-      - name: Set up .NET Core SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '4.8' # Set to your target .NET version
+      # Setup MSBuild for .NET Framework
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-      # Restore .NET dependencies
-      - name: Restore dependencies
-        run: dotnet restore
+      # Restore NuGet packages
+      - name: Restore NuGet packages
+        run: nuget restore YourProject.sln
 
-      # Build the .NET application
+      # Build the .NET Framework application
       - name: Build the app
-        run: dotnet build --configuration Release --no-restore
+        run: msbuild YourProject.sln /p:Configuration=Release
 
-      # Run tests (optional)
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
-
-      # Publish the app
+      # Publish the app to a folder
       - name: Publish the app
-        run: dotnet publish --configuration Release --output ./publish
+        run: msbuild YourProject.sln /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml /p:PublishDir=./publish
 
       # Upload artifact for deployment job
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: dotnet-app
+          name: aspnet-app
           path: ./publish
 
   deploy:
@@ -60,8 +54,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: dotnet-app
-      
+          name: aspnet-app
+
       # Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
