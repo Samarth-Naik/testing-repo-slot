@@ -17,9 +17,11 @@ jobs:
       # Checkout the repository
       - uses: actions/checkout@v4
 
-      # Setup MSBuild for .NET Framework
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v1
+      # Setup .NET SDK
+      - name: Set up .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '4.8'  # Set this to your target .NET version
 
       # Restore NuGet packages
       - name: Restore NuGet packages
