@@ -21,7 +21,7 @@ jobs:
       - name: Set up .NET Core SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.x' # Set to your target .NET version
+          dotnet-version: '4.8' # Set to your target .NET version
 
       # Restore .NET dependencies
       - name: Restore dependencies
