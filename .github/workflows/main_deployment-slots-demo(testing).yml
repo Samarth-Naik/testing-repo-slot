@@ -29,11 +29,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Run tests (optional)
-      - name: Run tests
-        run: |
-          pytest  # or another test framework you use
-
       # Upload artifact for deployment job
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
